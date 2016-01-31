@@ -15,6 +15,7 @@ import StartApp.Simple as StartApp
 -- component import example
 
 import Components.Hello exposing (hello)
+import Components.MatchList exposing (matchlist)
 
 
 -- APP KICK OFF!
@@ -50,6 +51,7 @@ view address model =
     [ hello model
     , p [ style [ ( "color", "red" ) ] ] [ text ("Elm Webpack Starter") ]
     , button [ class "mt-button-sm", onClick address Increment ] [ text "FTW!" ]
+    , matchlist []
     ]
 
 
