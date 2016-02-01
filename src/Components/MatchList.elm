@@ -12,8 +12,8 @@ import Array exposing (fromList)
 
 
 init =
-  { allMatches = allMatches
-  , visibleMatches = allMatches
+  { matches = matches
+  , nameFilter = ""
   }
 
 
@@ -32,8 +32,8 @@ type alias Match =
   }
 
 
-allMatches : List (Match)
-allMatches =
+matches : List (Match)
+matches =
   [ { date = "10/31/2015"
     , event = "Canada Cup 2015"
     , gameVersion = "Dhalsim build"
@@ -80,6 +80,14 @@ fields =
 -- VIEW
 
 
+getMatchesWithPlayerName name matches =
+  let
+    hasPlayer match =
+      contains name (.p1 match) || contains name (.p2 match)
+  in
+    filter hasPlayer matches
+
+
 view address model =
   div
     []
@@ -107,7 +115,13 @@ view address model =
             ]
         , tbody
             []
-            (map matchDataRow (.visibleMatches model))
+            (map
+              matchDataRow
+              (getMatchesWithPlayerName
+                (.nameFilter model)
+                (.matches model)
+              )
+            )
         ]
     ]
 
@@ -140,10 +154,4 @@ type Action
 update action model =
   case action of
     FilterPlayer playerName ->
-      let
-        hasPlayer match =
-          contains playerName (.p1 match) || contains playerName (.p2 match)
-      in
-        { allMatches = .allMatches model
-        , visibleMatches = filter hasPlayer (.allMatches model)
-        }
+      { model | nameFilter = playerName }
