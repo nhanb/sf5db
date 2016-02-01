@@ -14,6 +14,7 @@ import Array exposing (fromList)
 init =
   { matches = matches
   , nameFilter = ""
+  , charFilter = ""
   }
 
 
@@ -58,6 +59,18 @@ matches =
     , url = "http://youtube.com/watch?v=-XLirBQlMSM"
     , notes = "L E T S G O J U S T I N"
     }
+  , { date = "10/31/2016"
+    , event = "Saigon Cup 2016"
+    , gameVersion = "Vietnamese build"
+    , p1 = "Daigo"
+    , p1Char = "Ryu"
+    , p2 = "Rauden"
+    , p2Char = "Dhalsim"
+    , winner = "1"
+    , matchType = "Casual"
+    , url = "http://youtube.com/watch?v=-XLirBQlMSM"
+    , notes = "NO JUSTIN"
+    }
   ]
 
 
@@ -88,6 +101,20 @@ getMatchesWithPlayerName name matches =
     filter hasPlayer matches
 
 
+getMatchesWithCharacter char matches =
+  let
+    hasChar match =
+      contains char (.p1Char match) || contains char (.p2Char match)
+  in
+    filter hasChar matches
+
+
+applyAllFilters playerName charName matches =
+  getMatchesWithPlayerName
+    playerName
+    (getMatchesWithCharacter charName matches)
+
+
 view address model =
   div
     []
@@ -95,8 +122,14 @@ view address model =
         []
         [ input
             [ type' "text"
-            , placeholder "filter player name"
+            , placeholder "Filter player name"
             , on "input" targetValue (Signal.message address << FilterPlayer)
+            ]
+            []
+        , input
+            [ type' "text"
+            , placeholder "Filter character name"
+            , on "input" targetValue (Signal.message address << FilterCharacter)
             ]
             []
         ]
@@ -117,8 +150,9 @@ view address model =
             []
             (map
               matchDataRow
-              (getMatchesWithPlayerName
+              (applyAllFilters
                 (.nameFilter model)
+                (.charFilter model)
                 (.matches model)
               )
             )
@@ -149,9 +183,13 @@ matchDataRow match =
 
 type Action
   = FilterPlayer String
+  | FilterCharacter String
 
 
 update action model =
   case action of
     FilterPlayer playerName ->
       { model | nameFilter = playerName }
+
+    FilterCharacter charName ->
+      { model | charFilter = charName }
