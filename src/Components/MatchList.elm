@@ -110,9 +110,8 @@ getMatchesWithCharacter char matches =
 
 
 applyAllFilters playerName charName matches =
-  getMatchesWithPlayerName
-    playerName
-    (getMatchesWithCharacter charName matches)
+  getMatchesWithCharacter charName matches
+    |> getMatchesWithPlayerName playerName
 
 
 view address model =
