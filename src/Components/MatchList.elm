@@ -3,7 +3,7 @@ module Components.MatchList (..) where
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (targetValue, on)
-import String exposing (contains)
+import String exposing (contains, toLower)
 import List exposing (map, filter)
 import Array exposing (fromList)
 
@@ -93,20 +93,28 @@ fields =
 -- VIEW
 
 
+filterMatchByString field1 field2 query matches =
+  -- common logic of getMatchesWithPlayerName & getMatchesWithCharacter
+  if query == "" then
+    matches
+  else
+    let
+      lowerQuery =
+        toLower query
+
+      hasMatchingField match =
+        contains lowerQuery (toLower (field1 match))
+          || contains lowerQuery (toLower (field2 match))
+    in
+      filter hasMatchingField matches
+
+
 getMatchesWithPlayerName name matches =
-  let
-    hasPlayer match =
-      contains name (.p1 match) || contains name (.p2 match)
-  in
-    filter hasPlayer matches
+  filterMatchByString .p1 .p2 name matches
 
 
-getMatchesWithCharacter char matches =
-  let
-    hasChar match =
-      contains char (.p1Char match) || contains char (.p2Char match)
-  in
-    filter hasChar matches
+getMatchesWithCharacter character matches =
+  filterMatchByString .p1Char .p2Char character matches
 
 
 applyAllFilters playerName charName matches =
