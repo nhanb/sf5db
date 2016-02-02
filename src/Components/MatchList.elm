@@ -161,7 +161,25 @@ matchDataRow match =
     , td [] [ text (.p1Char match) ]
     , td [] [ text (.p2 match) ]
     , td [] [ text (.p2Char match) ]
-    , td [] [ text (.winner match) ]
+    , td
+        []
+        [ let
+            winner =
+              .winner match
+
+            p1 =
+              .p1 match
+
+            p2 =
+              .p2 match
+          in
+            if winner == "P1" then
+              text p1
+            else if winner == "P2" then
+              text p2
+            else
+              text "<unknown>"
+        ]
     , td [] [ text (.matchType match) ]
     , td
         []
