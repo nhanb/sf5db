@@ -2,27 +2,28 @@ module Main (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
 import String
-
-
--- official 'Elm Architecture' package
--- https://github.com/evancz/start-app
-
-import StartApp.Simple as StartApp
+import Signal
+import StartApp
 
 
 -- component import example
 
-import Components.MatchList exposing (init, view, update)
+import Components.MatchList exposing (init, view, update, Match, updateMatchesSignal)
 
 
 -- APP KICK OFF!
 
 
-main =
+port updateMatches : Signal (List (Match))
+app =
   StartApp.start
-    { model = init
+    { init = init
     , view = view
     , update = update
+    , inputs = [ updateMatchesSignal updateMatches ]
     }
+
+
+main =
+  app.html

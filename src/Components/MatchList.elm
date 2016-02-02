@@ -5,16 +5,24 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (targetValue, on)
 import String exposing (contains, toLower)
 import List exposing (map, filter)
-import Array exposing (fromList)
+import Effects exposing (Effects, Never)
+import Signal
+
+
+updateMatchesSignal =
+  -- Partial function that will accept a port as its final param. This is an
+  -- ugly-ish hack that helps expose UpdateMatches to Main
+  Signal.map UpdateMatches
+
 
 
 -- MODEL
 
 
-init =
-  { matches = matches
-  , nameFilter = ""
-  , charFilter = ""
+type alias Model =
+  { matches : List (Match)
+  , nameFilter : String
+  , charFilter : String
   }
 
 
@@ -33,45 +41,14 @@ type alias Match =
   }
 
 
-matches : List (Match)
-matches =
-  [ { date = "10/31/2015"
-    , event = "Canada Cup 2015"
-    , gameVersion = "Dhalsim build"
-    , p1 = "Arturo"
-    , p1Char = "Dhalsim"
-    , p2 = "Ricki Ortiz"
-    , p2Char = "Chun Li"
-    , winner = "1"
-    , matchType = "Casual"
-    , url = "http://youtube.com/watch?v=-XLirBQlMSM"
-    , notes = "nope"
+init : ( Model, Effects Action )
+init =
+  ( { matches = []
+    , nameFilter = ""
+    , charFilter = ""
     }
-  , { date = "10/31/2016"
-    , event = "Saigon Cup 2016"
-    , gameVersion = "Vietnamese build"
-    , p1 = "Daigo"
-    , p1Char = "Ryu"
-    , p2 = "Justin"
-    , p2Char = "Chun Li"
-    , winner = "1"
-    , matchType = "Casual"
-    , url = "http://youtube.com/watch?v=-XLirBQlMSM"
-    , notes = "L E T S G O J U S T I N"
-    }
-  , { date = "10/31/2016"
-    , event = "Saigon Cup 2016"
-    , gameVersion = "Vietnamese build"
-    , p1 = "Daigo"
-    , p1Char = "Ryu"
-    , p2 = "Rauden"
-    , p2Char = "Dhalsim"
-    , winner = "1"
-    , matchType = "Casual"
-    , url = "http://youtube.com/watch?v=-XLirBQlMSM"
-    , notes = "NO JUSTIN"
-    }
-  ]
+  , Effects.none
+  )
 
 
 fields =
@@ -122,6 +99,36 @@ applyAllFilters playerName charName matches =
     |> getMatchesWithPlayerName playerName
 
 
+matchesTable model =
+  if (.matches model == []) then
+    div [] [ text "Loading..." ]
+  else
+    table
+      []
+      [ thead
+          []
+          [ tr
+              []
+              (let
+                ths value =
+                  th [] [ text value ]
+               in
+                map ths fields
+              )
+          ]
+      , tbody
+          []
+          (map
+            matchDataRow
+            (applyAllFilters
+              (.nameFilter model)
+              (.charFilter model)
+              (.matches model)
+            )
+          )
+      ]
+
+
 view address model =
   div
     []
@@ -140,30 +147,7 @@ view address model =
             ]
             []
         ]
-    , table
-        []
-        [ thead
-            []
-            [ tr
-                []
-                (let
-                  ths value =
-                    th [] [ text value ]
-                 in
-                  map ths fields
-                )
-            ]
-        , tbody
-            []
-            (map
-              matchDataRow
-              (applyAllFilters
-                (.nameFilter model)
-                (.charFilter model)
-                (.matches model)
-              )
-            )
-        ]
+    , matchesTable model
     ]
 
 
@@ -191,12 +175,23 @@ matchDataRow match =
 type Action
   = FilterPlayer String
   | FilterCharacter String
+  | UpdateMatches (List (Match))
 
 
+update : Action -> Model -> ( Model, Effects Action )
 update action model =
   case action of
     FilterPlayer playerName ->
-      { model | nameFilter = playerName }
+      ( { model | nameFilter = playerName }
+      , Effects.none
+      )
 
     FilterCharacter charName ->
-      { model | charFilter = charName }
+      ( { model | charFilter = charName }
+      , Effects.none
+      )
+
+    UpdateMatches matches ->
+      ( { model | matches = matches }
+      , Effects.none
+      )
