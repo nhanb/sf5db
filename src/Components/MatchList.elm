@@ -52,17 +52,17 @@ init =
 
 
 fields =
-  [ "date"
-  , "event"
-  , "gameVersion"
-  , "p1"
-  , "p1Char"
-  , "p2"
-  , "p2Char"
-  , "winner"
-  , "matchType"
-  , "url"
-  , "notes"
+  [ "Date"
+  , "Event"
+  , "Game version"
+  , "P1"
+  , "P1 Character"
+  , "P2"
+  , "P2 Character"
+  , "Winner"
+  , "Match Type"
+  , "Video"
+  , "Notes"
   ]
 
 
@@ -163,7 +163,13 @@ matchDataRow match =
     , td [] [ text (.p2Char match) ]
     , td [] [ text (.winner match) ]
     , td [] [ text (.matchType match) ]
-    , td [] [ text (.url match) ]
+    , td
+        []
+        [ a
+            [ href (.url match)
+            ]
+            [ text "Watch" ]
+        ]
     , td [] [ text (.notes match) ]
     ]
 
