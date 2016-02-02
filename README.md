@@ -1,48 +1,58 @@
-# elm-webpack-starter
+# SF5DB
 
-A simple Webpack setup for writing [Elm](http://elm-lang.org/) apps:
+Database of Street Fighter 5 matches, written as my gateway drug to Elm. Uses
+[elm-webpack-starter][5] as a starting point.
 
-* Dev server with live reloading
-* Support for CSS/SCSS, with Autoprefixer
-* Bundling and minification for deployment
-* Basic app scaffold, integrating Elm's official [StartApp](https://github.com/evancz/start-app) package
-* A snippet of example code to get you started!
+Matches are pulled from [a Google Spreadsheet][1] using [Tabletop][2], then passed into Elm using
+[a port][3].
 
-### Install:
-```
-git clone git@github.com:pmdesgn/elm-webpack-starter.git
-cd elm-webpack-starter
-npm install
-```
+## Install:
+
+I used NodeJS 5.4.0. Other versions might just work. Whatever.
 
 If you haven't done so yet, install Elm globally:
-```
+
+```bash
 npm install -g elm
 ```
 
 Install Elm's dependencies:
-```
+
+```bash
+npm install
 elm package install
 ```
 
-### Serve locally:
-```
+## Serve locally:
+
+```bash
 npm start
 ```
-* Access app at `http://localhost:8080/`
-* Get coding! The entry point file is `src/Main.elm` 
-* Browser will refresh automatically on any file changes..
+
+Then access app at `http://localhost:3000/`.
 
 
-### Build & bundle for prod:
-```
-npm run build
+## Build & bundle for prod:
+
+The deploy command makes use of [ghp-import][4]. If you don't have it already:
+
+```bash
+sudo pip3 install ghp-import
 ```
 
-* Files are saved into the `/dist` folder
-* To check it, open `dist/index.html`
-* To publish the `/dist` folder to your repo's `gh-pages`, commit any changes then:
+Then:
+
+``` bash
+npm run build  # compile everything into **./dist/**
+npm run deploy  # use `ghp-import` to deploy onto GitHub Pages
 ```
-git subtree push --prefix dist origin gh-pages
-open http://<your-github-account>.github.io/elm-webpack-starter/
-```
+
+## Disclaimer
+
+This is baby's first step into Elm. Don't look at this source code for inspiration... yet.
+
+[1]: https://docs.google.com/spreadsheets/d/10xfPxMP-w-Ybyy46jUN5VSnSzIap2V_S2UdVmdYg7tM/pub?gid=0#
+[2]: https://github.com/jsoma/tabletop
+[3]: http://elm-lang.org/guide/interop
+[4]: https://github.com/davisp/ghp-import
+[5]: https://github.com/pmdesgn/elm-webpack-starter
