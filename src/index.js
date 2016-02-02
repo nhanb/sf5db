@@ -2,7 +2,7 @@
 require( '../dist/index.html' );
 
 // pull in desired CSS/SASS files
-require( './styles/app.css' );
+require( './styles/app.scss' );
 
 var Elm = require( './Main' );
 var elmApp = Elm.embed(Elm.Main, document.getElementById('main'), {

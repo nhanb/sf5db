@@ -75,7 +75,7 @@ if ( TARGET_ENV === 'dev' ) {
     },
 
     postcss: [ autoprefixer( { browsers: ['last 2 versions'] } ) ]
-    
+
   });
 }
 

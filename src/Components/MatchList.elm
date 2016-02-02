@@ -131,7 +131,7 @@ matchesTable model =
 
 view address model =
   div
-    []
+    [ class "wrap" ]
     [ div
         []
         [ input

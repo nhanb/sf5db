@@ -1,0 +1,25 @@
+@import "~susy/sass/susy";
+
+$susy: (
+  columns: 12,
+  container: 1120px,
+  global-box-sizing: border-box,
+);
+
+// Because http://www.paulirish.com/2012/box-sizing-border-box-ftw/
+@include border-box-sizing;
+
+.wrap {
+  @include container;
+}
+
+
+// Sane looking tables:
+table {
+  border-collapse: collapse;
+}
+td, th {
+  border: 1px solid #999;
+  padding: 0.5rem;
+  text-align: left;
+}
