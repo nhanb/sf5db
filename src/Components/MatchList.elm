@@ -76,7 +76,7 @@ fields =
 
 view address model =
   div
-    [ class "wrap" ]
+    [ class "container" ]
     [ searchForm address
     , matchesTable model
     ]
@@ -84,38 +84,33 @@ view address model =
 
 searchForm address =
   div
-    [ id "search-form" ]
-    [ playerFilterInput address FilterPlayer1
-    , playerFilterInput address FilterPlayer2
-    , characterFilterInput address FilterCharacter1
-    , characterFilterInput address FilterCharacter2
+    [ class "search-form" ]
+    [ div
+        [ class "search-form__vs" ]
+        [ text "vs" ]
+    , filterInput address FilterPlayer1 "P1 name" "p1-name"
+    , filterInput address FilterPlayer2 "P2 name" "p2-name"
+    , filterInput address FilterCharacter1 "P1 character" "p1-char"
+    , filterInput address FilterCharacter2 "P2 character" "p2-char"
     ]
 
 
-playerFilterInput address action =
+filterInput address action desc cssClass =
   input
     [ type' "text"
-    , placeholder "Filter player name"
+    , placeholder desc
     , on "input" targetValue (Signal.message address << action)
-    ]
-    []
-
-
-characterFilterInput address action =
-  input
-    [ type' "text"
-    , placeholder "Filter character name"
-    , on "input" targetValue (Signal.message address << action)
+    , class ("search-form__input search-form__" ++ cssClass)
     ]
     []
 
 
 matchesTable model =
   if (.matches model == []) then
-    div [] [ text "Loading..." ]
+    div [ class "match-list" ] [ text "Loading..." ]
   else
     table
-      []
+      [ class "match-list" ]
       [ thead
           []
           [ tr

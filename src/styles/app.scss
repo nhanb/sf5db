@@ -1,18 +1,55 @@
-@import "~susy/sass/susy";
+/* ---------------- Layout ---------------- */
 
-$susy: (
-  columns: 12,
-  container: 1120px,
-  global-box-sizing: border-box,
-);
+@import "~zen-grids/sass/zen-grids";
 
-// Because http://www.paulirish.com/2012/box-sizing-border-box-ftw/
-@include border-box-sizing;
+$zen-columns: 12;
+$zen-gutters: 10px;
 
-.wrap {
-  @include container;
+.container {
+  @include zen-grid-container();
+  max-width: 1020px;
+  margin: 0 auto;
 }
 
+.search-form {
+  @include zen-grid-item(12, 1);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-form__vs {
+  @include zen-grid-item(2, 6, right);
+  text-align: center;
+}
+
+.search-form__p1-name {
+  @include zen-grid-item(5, 1);
+}
+
+.search-form__p2-name {
+  @include zen-grid-item(5, 8);
+}
+
+.search-form__p1-char {
+  @include zen-new-row(left);
+  @include zen-grid-item(5, 1);
+}
+
+.search-form__p2-char {
+  @include zen-grid-item(5, 8);
+}
+
+.search-form__input {
+  margin-bottom: 0.5rem;
+}
+
+.match-list {
+  @include zen-grid-item(12,1);
+  @include zen-new-row();
+}
+
+
+/* ---------------- Styling ---------------- */
 
 // Sane looking tables:
 table {
@@ -24,10 +61,6 @@ td, th {
   text-align: left;
 }
 
-
-// Box arround search form
-#search-form {
-  border: 1px solid #999;
-  padding: 0.5rem;
-  margin-bottom: 1.5rem;
+.search-form {
+  background-color: #eee;
 }
