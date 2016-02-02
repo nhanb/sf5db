@@ -21,8 +21,10 @@ updateMatchesSignal =
 
 type alias Model =
   { matches : List (Match)
-  , nameFilter : String
-  , charFilter : String
+  , nameFilter1 : String
+  , nameFilter2 : String
+  , charFilter1 : String
+  , charFilter2 : String
   }
 
 
@@ -44,8 +46,10 @@ type alias Match =
 init : ( Model, Effects Action )
 init =
   ( { matches = []
-    , nameFilter = ""
-    , charFilter = ""
+    , nameFilter1 = ""
+    , nameFilter2 = ""
+    , charFilter1 = ""
+    , charFilter2 = ""
     }
   , Effects.none
   )
@@ -70,33 +74,40 @@ fields =
 -- VIEW
 
 
-filterMatchByString field1 field2 query matches =
-  -- common logic of getMatchesWithPlayerName & getMatchesWithCharacter
-  if query == "" then
-    matches
-  else
-    let
-      lowerQuery =
-        toLower query
-
-      hasMatchingField match =
-        contains lowerQuery (toLower (field1 match))
-          || contains lowerQuery (toLower (field2 match))
-    in
-      filter hasMatchingField matches
+view address model =
+  div
+    [ class "wrap" ]
+    [ searchForm address
+    , matchesTable model
+    ]
 
 
-getMatchesWithPlayerName name matches =
-  filterMatchByString .p1 .p2 name matches
+searchForm address =
+  div
+    [ id "search-form" ]
+    [ playerFilterInput address FilterPlayer1
+    , playerFilterInput address FilterPlayer2
+    , characterFilterInput address FilterCharacter1
+    , characterFilterInput address FilterCharacter2
+    ]
 
 
-getMatchesWithCharacter character matches =
-  filterMatchByString .p1Char .p2Char character matches
+playerFilterInput address action =
+  input
+    [ type' "text"
+    , placeholder "Filter player name"
+    , on "input" targetValue (Signal.message address << action)
+    ]
+    []
 
 
-applyAllFilters playerName charName matches =
-  getMatchesWithCharacter charName matches
-    |> getMatchesWithPlayerName playerName
+characterFilterInput address action =
+  input
+    [ type' "text"
+    , placeholder "Filter character name"
+    , on "input" targetValue (Signal.message address << action)
+    ]
+    []
 
 
 matchesTable model =
@@ -120,35 +131,12 @@ matchesTable model =
           []
           (map
             matchDataRow
-            (applyAllFilters
-              (.nameFilter model)
-              (.charFilter model)
-              (.matches model)
+            ((.matches model)
+              |> getMatchesWithPlayer (.nameFilter1 model) (.nameFilter2 model)
+              |> getMatchesWithCharacter (.charFilter1 model) (.charFilter2 model)
             )
           )
       ]
-
-
-view address model =
-  div
-    [ class "wrap" ]
-    [ div
-        []
-        [ input
-            [ type' "text"
-            , placeholder "Filter player name"
-            , on "input" targetValue (Signal.message address << FilterPlayer)
-            ]
-            []
-        , input
-            [ type' "text"
-            , placeholder "Filter character name"
-            , on "input" targetValue (Signal.message address << FilterCharacter)
-            ]
-            []
-        ]
-    , matchesTable model
-    ]
 
 
 matchDataRow match =
@@ -192,26 +180,99 @@ matchDataRow match =
     ]
 
 
+hasSingleField getField1 getField2 query matches =
+  -- common logic of getMatchesWithPlayer & getMatchesWithCharacter
+  let
+    lowerQuery =
+      toLower query
+
+    hasMatchingField match =
+      contains lowerQuery (toLower (getField1 match))
+        || contains lowerQuery (toLower (getField2 match))
+  in
+    filter hasMatchingField matches
+
+
+hasBothFields getField1 getField2 name1 name2 matches =
+  let
+    lowerName1 =
+      toLower name1
+
+    lowerName2 =
+      toLower name2
+
+    hasMatchingPlayers match =
+      let
+        lowerP1 =
+          toLower (getField1 match)
+
+        lowerP2 =
+          toLower (getField2 match)
+      in
+        (contains lowerName1 lowerP1
+          && contains lowerName2 lowerP2
+        )
+          || (contains lowerName1 lowerP2
+                && contains lowerName2 lowerP1
+             )
+  in
+    filter hasMatchingPlayers matches
+
+
+getMatchesWithPlayer name1 name2 matches =
+  if name1 == "" && name2 == "" then
+    matches
+  else if name1 == "" then
+    hasSingleField .p1 .p2 name2 matches
+  else if name2 == "" then
+    hasSingleField .p1 .p2 name1 matches
+  else
+    hasBothFields .p1 .p2 name1 name2 matches
+
+
+getMatchesWithCharacter name1 name2 matches =
+  if name1 == "" && name2 == "" then
+    matches
+  else if name1 == "" then
+    hasSingleField .p1Char .p2Char name2 matches
+  else if name2 == "" then
+    hasSingleField .p1Char .p2Char name1 matches
+  else
+    hasBothFields .p1Char .p2Char name1 name2 matches
+
+
 
 -- UPDATE
 
 
 type Action
-  = FilterPlayer String
-  | FilterCharacter String
+  = FilterPlayer1 String
+  | FilterPlayer2 String
+  | FilterCharacter1 String
+  | FilterCharacter2 String
   | UpdateMatches (List (Match))
 
 
 update : Action -> Model -> ( Model, Effects Action )
 update action model =
   case action of
-    FilterPlayer playerName ->
-      ( { model | nameFilter = playerName }
+    FilterPlayer1 playerName ->
+      ( { model | nameFilter1 = playerName }
       , Effects.none
       )
 
-    FilterCharacter charName ->
-      ( { model | charFilter = charName }
+    FilterPlayer2 playerName ->
+      ( { model | nameFilter2 = playerName }
+      , Effects.none
+      )
+
+    FilterCharacter1 charName ->
+      ( { model | charFilter1 = charName }
+      , Effects.none
+      )
+
+    FilterCharacter2 charName ->
+      ( { model | charFilter2 = charName }
       , Effects.none
       )
 
