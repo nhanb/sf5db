@@ -7,6 +7,7 @@ import String exposing (contains, toLower)
 import List exposing (map, filter)
 import Effects exposing (Effects, Never)
 import Signal
+import Components.Spinner exposing (spinner)
 
 
 updateMatchesSignal =
@@ -55,21 +56,6 @@ init =
   )
 
 
-fields =
-  [ "Date"
-  , "Event"
-  , "Game version"
-  , "P1"
-  , "P1 Character"
-  , "P2"
-  , "P2 Character"
-  , "Winner"
-  , "Match Type"
-  , "Video"
-  , "Notes"
-  ]
-
-
 
 -- VIEW
 
@@ -105,23 +91,31 @@ filterInput address action desc cssClass =
     []
 
 
+matchesTableHead =
+  thead
+    []
+    [ tr
+        []
+        [ th [] [ text "Date" ]
+        , th [] [ text "Event" ]
+        , th [] [ text "Game version" ]
+        , th [ colspan 2 ] [ text "P1" ]
+        , th [ colspan 2 ] [ text "P2" ]
+        , th [] [ text "Winner" ]
+        , th [] [ text "Match Type" ]
+        , th [] [ text "Video" ]
+        , th [] [ text "Notes" ]
+        ]
+    ]
+
+
 matchesTable model =
   if (.matches model == []) then
-    div [ class "match-list" ] [ text "Loading..." ]
+    div [ class "match-list" ] [ spinner ]
   else
     table
       [ class "match-list" ]
-      [ thead
-          []
-          [ tr
-              []
-              (let
-                ths value =
-                  th [] [ text value ]
-               in
-                map ths fields
-              )
-          ]
+      [ matchesTableHead
       , tbody
           []
           (map
