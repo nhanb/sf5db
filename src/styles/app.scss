@@ -1,4 +1,5 @@
 @import "./spinner";
+@import "./sprites";
 
 /* ---------------- Layout ---------------- */
 
@@ -9,7 +10,7 @@ $zen-gutters: 10px;
 
 .container {
   @include zen-grid-container();
-  max-width: 1020px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -52,6 +53,9 @@ $zen-gutters: 10px;
 
 
 /* ---------------- Styling ---------------- */
+body {
+  font-family: "Ubuntu", "Lato", "Helvetica", sans-serif;
+}
 
 // Sane looking tables:
 table {

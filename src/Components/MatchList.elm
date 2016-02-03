@@ -99,8 +99,8 @@ matchesTableHead =
         [ th [] [ text "Date" ]
         , th [] [ text "Event" ]
         , th [] [ text "Game version" ]
-        , th [ colspan 2 ] [ text "P1" ]
-        , th [ colspan 2 ] [ text "P2" ]
+        , th [] [ text "P1" ]
+        , th [] [ text "P2" ]
         , th [] [ text "Winner" ]
         , th [] [ text "Match Type" ]
         , th [] [ text "Video" ]
@@ -129,44 +129,107 @@ matchesTable model =
 
 
 matchDataRow match =
-  tr
-    []
-    [ td [] [ text (.date match) ]
-    , td [] [ text (.event match) ]
-    , td [] [ text (.gameVersion match) ]
-    , td [] [ text (.p1 match) ]
-    , td [] [ text (.p1Char match) ]
-    , td [] [ text (.p2 match) ]
-    , td [] [ text (.p2Char match) ]
-    , td
-        []
-        [ let
-            winner =
-              .winner match
+  let
+    charSpriteName charName =
+      case charName of
+        "Birdie" ->
+          "birdie"
 
-            p1 =
-              .p1 match
+        "M. Bison" ->
+          "bison"
 
-            p2 =
-              .p2 match
-          in
-            if winner == "P1" then
-              text p1
-            else if winner == "P2" then
-              text p2
-            else
-              text "<unknown>"
-        ]
-    , td [] [ text (.matchType match) ]
-    , td
-        []
-        [ a
-            [ href (.url match)
-            ]
-            [ text "Watch" ]
-        ]
-    , td [] [ text (.notes match) ]
-    ]
+        "Cammy" ->
+          "cammy"
+
+        "Chun Li" ->
+          "chun"
+
+        "Dhalsim" ->
+          "dhalsim"
+
+        "F.A.N.G" ->
+          "fang"
+
+        "Karin" ->
+          "karin"
+
+        "Ken" ->
+          "ken"
+
+        "Laura" ->
+          "laura"
+
+        "R. Mika" ->
+          "mika"
+
+        "Nash" ->
+          "nash"
+
+        "Necalli" ->
+          "necalli"
+
+        "Rashid" ->
+          "rashid"
+
+        "Ryu" ->
+          "ryu"
+
+        "Vega" ->
+          "vega"
+
+        "Zangief" ->
+          "zangief"
+
+        s ->
+          s ++ " unknown"
+
+    charCss charName =
+      "sprite sprite-" ++ (charSpriteName charName)
+  in
+    tr
+      []
+      [ td [] [ text (.date match) ]
+      , td [] [ text (.event match) ]
+      , td [] [ text (.gameVersion match) ]
+      , td
+          []
+          [ div [ class (charCss (.p1Char match)) ] []
+          , text (.p1 match)
+          ]
+      , td
+          []
+          [ div [ class (charCss (.p2Char match)) ] []
+          , text (.p2 match)
+          ]
+      , td
+          []
+          [ let
+              winner =
+                .winner match
+
+              p1 =
+                .p1 match
+
+              p2 =
+                .p2 match
+            in
+              if winner == "P1" then
+                text p1
+              else if winner == "P2" then
+                text p2
+              else
+                text "<unknown>"
+          ]
+      , td [] [ text (.matchType match) ]
+      , td
+          []
+          [ a
+              [ href (.url match)
+              ]
+              [ text "Watch" ]
+          ]
+      , td [] [ text (.notes match) ]
+      ]
 
 
 hasSingleField getField1 getField2 query matches =

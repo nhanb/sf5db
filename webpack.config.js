@@ -42,10 +42,21 @@ var commonConfig = {
         test:    /\.elm$/,
         exclude: [/elm-stuff/, /node_modules/],
         loader:  'elm-webpack'
+      },
+      {
+        test:    /\.png/,
+        exclude: [/elm-stuff/, /node_modules/],
+        loader:  'url-loader'
       }
     ],
 
-    noParse: /\.elm$/
+    noParse: /\.elm$/,
+  },
+
+  postcss: function() {
+    return [
+      autoprefixer( { browsers: ['last 2 versions'] } ),
+    ]
   }
 }
 
@@ -74,8 +85,6 @@ if ( TARGET_ENV === 'dev' ) {
       ]
     },
 
-    postcss: [ autoprefixer( { browsers: ['last 2 versions'] } ) ]
-
   });
 }
 
@@ -96,8 +105,6 @@ if ( TARGET_ENV === 'prod' ) {
         }
       ]
     },
-
-    postcss: [ autoprefixer( { browsers: ['last 2 versions'] } ) ],
 
     plugins: [
       // extract CSS into a separate file

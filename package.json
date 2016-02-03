@@ -23,6 +23,7 @@
     "style-loader": "^0.13.0",
     "swig": "^1.4.2",
     "tabletop": "git+https://github.com/jsoma/tabletop.git",
+    "url-loader": "^0.5.7",
     "webpack": "^1.12.12",
     "webpack-dev-server": "^1.14.1",
     "webpack-merge": "^0.7.3",
