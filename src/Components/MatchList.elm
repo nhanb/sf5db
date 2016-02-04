@@ -65,6 +65,7 @@ view address model =
     [ class "container" ]
     [ searchForm address
     , matchesTable model
+    , foot (.matches model == [])
     ]
 
 
@@ -291,6 +292,21 @@ getMatchesWithCharacter name1 name2 matches =
     hasSingleField .p1Char .p2Char name1 matches
   else
     hasBothFields .p1Char .p2Char name1 name2 matches
+
+
+foot initializing =
+  if initializing then
+    text ""
+  else
+    footer
+      [ class "footer" ]
+      [ a [ href "http://github.com/nhanb/sf5db" ] [ text "GitHub" ]
+      , text " | "
+      , a
+          [ href "http://forums.shoryuken.com/discussion/204887/srk-street-fighter-v-match-video-database"
+          ]
+          [ text "Data Source" ]
+      ]
 
 
 

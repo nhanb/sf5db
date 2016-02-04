@@ -47,8 +47,15 @@ $zen-gutters: 10px;
 }
 
 .match-list {
-  @include zen-grid-item(12,1);
+  @include zen-grid-item(12, 1);
   @include zen-new-row();
+}
+
+.footer {
+  @include zen-grid-item(12, 1);
+  @include zen-new-row();
+
+  margin-top: 1.5rem;
 }
 
 
