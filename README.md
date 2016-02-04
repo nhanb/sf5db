@@ -57,7 +57,7 @@ npm run deploy
 
 This is baby's first step into Elm. Don't look at this source code for inspiration... yet.
 
-[1]: https://docs.google.com/spreadsheets/d/10xfPxMP-w-Ybyy46jUN5VSnSzIap2V_S2UdVmdYg7tM/pub?gid=0#
+[1]: http://forums.shoryuken.com/discussion/204887/srk-street-fighter-v-match-video-database
 [2]: https://github.com/jsoma/tabletop
 [3]: http://elm-lang.org/guide/interop
 [4]: https://github.com/davisp/ghp-import
