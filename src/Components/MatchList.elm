@@ -2,7 +2,7 @@ module Components.MatchList (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (targetValue, on)
+import Html.Events exposing (targetValue, on, onClick)
 import String exposing (contains, toLower)
 import List exposing (map, filter)
 import Effects exposing (Effects, Never)
@@ -26,6 +26,7 @@ type alias Model =
   , nameFilter2 : String
   , charFilter1 : String
   , charFilter2 : String
+  , showWinners : Bool
   }
 
 
@@ -51,6 +52,7 @@ init =
     , nameFilter2 = ""
     , charFilter1 = ""
     , charFilter2 = ""
+    , showWinners = False
     }
   , Effects.none
   )
@@ -64,7 +66,7 @@ view address model =
   div
     [ class "container" ]
     [ searchForm address
-    , matchesTable model
+    , matchesTable address model
     , foot (.matches model == [])
     ]
 
@@ -92,7 +94,7 @@ filterInput address action desc cssClass =
     []
 
 
-matchesTableHead =
+matchesTableHead address model =
   thead
     []
     [ tr
@@ -102,7 +104,19 @@ matchesTableHead =
         , th [] [ text "Game version" ]
         , th [] [ text "P1" ]
         , th [] [ text "P2" ]
-        , th [] [ text "Winner" ]
+        , th
+            []
+            [ text "Winner "
+            , button
+                [ onClick address ToggleWinners ]
+                [ text
+                    (if (.showWinners model) then
+                      "Hide"
+                     else
+                      "Show"
+                    )
+                ]
+            ]
         , th [] [ text "Match Type" ]
         , th [] [ text "Video" ]
         , th [] [ text "Notes" ]
@@ -110,17 +124,17 @@ matchesTableHead =
     ]
 
 
-matchesTable model =
+matchesTable address model =
   if (.matches model == []) then
     div [ class "match-list" ] [ spinner ]
   else
     table
       [ class "match-list" ]
-      [ matchesTableHead
+      [ matchesTableHead address model
       , tbody
           []
           (map
-            matchDataRow
+            (matchDataRow (.showWinners model))
             ((.matches model)
               |> getMatchesWithPlayer (.nameFilter1 model) (.nameFilter2 model)
               |> getMatchesWithCharacter (.charFilter1 model) (.charFilter2 model)
@@ -129,7 +143,7 @@ matchesTable model =
       ]
 
 
-matchDataRow match =
+matchDataRow showWinners match =
   let
     charSpriteName charName =
       case charName of
@@ -204,22 +218,25 @@ matchDataRow match =
           ]
       , td
           []
-          [ let
-              winner =
-                .winner match
+          [ if (not showWinners) then
+              text "<hidden>"
+            else
+              let
+                winner =
+                  .winner match
 
-              p1 =
-                .p1 match
+                p1 =
+                  .p1 match
 
-              p2 =
-                .p2 match
-            in
-              if winner == "P1" then
-                text p1
-              else if winner == "P2" then
-                text p2
-              else
-                text "<unknown>"
+                p2 =
+                  .p2 match
+              in
+                if winner == "P1" then
+                  text p1
+                else if winner == "P2" then
+                  text p2
+                else
+                  text "<unknown>"
           ]
       , td [] [ text (.matchType match) ]
       , td
@@ -318,6 +335,7 @@ type Action
   | FilterPlayer2 String
   | FilterCharacter1 String
   | FilterCharacter2 String
+  | ToggleWinners
   | UpdateMatches (List (Match))
 
 
@@ -341,6 +359,11 @@ update action model =
 
     FilterCharacter2 charName ->
       ( { model | charFilter2 = charName }
+      , Effects.none
+      )
+
+    ToggleWinners ->
+      ( { model | showWinners = not (.showWinners model) }
       , Effects.none
       )
 
