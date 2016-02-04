@@ -34,7 +34,7 @@ Then access app at `http://localhost:3000/`.
 
 ## Build & bundle for prod:
 
-The deploy command makes use of [ghp-import][4]. If you don't have it already:
+The push command makes use of [ghp-import][4]. If you don't have it already:
 
 ```bash
 sudo pip3 install ghp-import
@@ -44,7 +44,13 @@ Then:
 
 ``` bash
 npm run build  # compile everything into **./dist/**
-npm run deploy  # use `ghp-import` to deploy onto GitHub Pages
+npm run push  # use `ghp-import` to deploy onto GitHub Pages
+```
+
+Or use the shorthand that runs both of those commands:
+
+```bash
+npm run deploy
 ```
 
 ## Disclaimer
