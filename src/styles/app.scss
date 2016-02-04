@@ -53,20 +53,33 @@ $zen-gutters: 10px;
 
 
 /* ---------------- Styling ---------------- */
+$table-stripe-color: #eee;
+$table-border-color: #999;
+$table-header-bg: #666;
+$table-header-color: #fff;
+
+
 body {
   font-family: "Ubuntu", "Lato", "Helvetica", sans-serif;
 }
+
 
 // Sane looking tables:
 table {
   border-collapse: collapse;
 }
-td, th {
-  border: 1px solid #999;
+td {
+  padding: 1rem 0.5rem;
+  text-align: left;
+}
+th {
   padding: 0.5rem;
   text-align: left;
 }
-
-.search-form {
-  background-color: #eee;
+tr:nth-of-type(even) {
+  background: $table-stripe-color;
+}
+th {
+  background: $table-header-bg;
+  color: $table-header-color;
 }
