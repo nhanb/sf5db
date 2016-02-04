@@ -60,13 +60,15 @@ $table-header-color: #fff;
 
 
 body {
-  font-family: "Ubuntu", "Lato", "Helvetica", sans-serif;
+  font-family: "Lato", "Helvetica", "Ubuntu", sans-serif;
+  font-size: 12pt;
 }
 
 
 // Sane looking tables:
 table {
   border-collapse: collapse;
+  font-size: 11pt;
 }
 td {
   padding: 1rem 0.5rem;
