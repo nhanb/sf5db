@@ -12,7 +12,7 @@ var elmApp = Elm.embed(Elm.Main, document.getElementById('main'), {
 // Fetch match list from Google Spreadsheet
 var Tabletop = require('tabletop/src/tabletop.js');
 Tabletop.init({
-  key: '10xfPxMP-w-Ybyy46jUN5VSnSzIap2V_S2UdVmdYg7tM',
+  key: '1Y6UfWjqncJ0qLzRjxvTc00Dc3hX1rJ5ffFvAS1uCquE',
   callback: function(data, tabletop) {
     // Send match list to elm app
     var formattedData = data.map(function(match) {
