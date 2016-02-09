@@ -135,9 +135,30 @@ matchesTable address model =
           []
           (map
             (matchDataRow (.showWinners model))
-            ((.matches model)
-              |> getMatchesWithPlayer (.nameFilter1 model) (.nameFilter2 model)
-              |> getMatchesWithCharacter (.charFilter1 model) (.charFilter2 model)
+            (let
+              matches =
+                .matches model
+
+              name1 =
+                .nameFilter1 model
+
+              name2 =
+                .nameFilter2 model
+
+              char1 =
+                .charFilter1 model
+
+              char2 =
+                .charFilter2 model
+             in
+              (matches
+                |> filterP1 name1 char1
+                |> filterP2 name2 char2
+              )
+                ++ (matches
+                      |> filterP1 name2 char2
+                      |> filterP2 name1 char1
+                   )
             )
           )
       ]
@@ -250,65 +271,27 @@ matchDataRow showWinners match =
       ]
 
 
-hasSingleField getField1 getField2 query matches =
-  -- common logic of getMatchesWithPlayer & getMatchesWithCharacter
-  let
-    lowerQuery =
-      toLower query
-
-    hasMatchingField match =
-      contains lowerQuery (toLower (getField1 match))
-        || contains lowerQuery (toLower (getField2 match))
-  in
-    filter hasMatchingField matches
-
-
-hasBothFields getField1 getField2 name1 name2 matches =
-  let
-    lowerName1 =
-      toLower name1
-
-    lowerName2 =
-      toLower name2
-
-    hasMatchingPlayers match =
-      let
-        lowerP1 =
-          toLower (getField1 match)
-
-        lowerP2 =
-          toLower (getField2 match)
-      in
-        (contains lowerName1 lowerP1
-          && contains lowerName2 lowerP2
-        )
-          || (contains lowerName1 lowerP2
-                && contains lowerName2 lowerP1
-             )
-  in
-    filter hasMatchingPlayers matches
-
-
-getMatchesWithPlayer name1 name2 matches =
-  if name1 == "" && name2 == "" then
+filterByField getField value matches =
+  if value == "" then
     matches
-  else if name1 == "" then
-    hasSingleField .p1 .p2 name2 matches
-  else if name2 == "" then
-    hasSingleField .p1 .p2 name1 matches
   else
-    hasBothFields .p1 .p2 name1 name2 matches
+    let
+      hasField match =
+        contains (toLower value) (toLower (getField match))
+    in
+      filter hasField matches
 
 
-getMatchesWithCharacter name1 name2 matches =
-  if name1 == "" && name2 == "" then
-    matches
-  else if name1 == "" then
-    hasSingleField .p1Char .p2Char name2 matches
-  else if name2 == "" then
-    hasSingleField .p1Char .p2Char name1 matches
-  else
-    hasBothFields .p1Char .p2Char name1 name2 matches
+filterP1 name char matches =
+  matches
+    |> filterByField .p1Char char
+    |> filterByField .p1 name
+
+
+filterP2 name char matches =
+  matches
+    |> filterByField .p2Char char
+    |> filterByField .p2 name
 
 
 foot initializing =
