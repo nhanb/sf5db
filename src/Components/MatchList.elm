@@ -300,7 +300,7 @@ foot initializing =
   else
     footer
       [ class "footer" ]
-      [ a [ href "http://github.com/nhanb/sf5db" ] [ text "GitHub" ]
+      [ a [ href "https://github.com/nhanb/sf5db" ] [ text "GitHub" ]
       , text " | "
       , a
           [ href "http://forums.shoryuken.com/discussion/204887/srk-street-fighter-v-match-video-database"
