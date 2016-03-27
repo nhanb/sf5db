@@ -183,7 +183,7 @@ matchDataRow showWinners match =
         "Dhalsim" ->
           "dhalsim"
 
-        "F.A.N.G" ->
+        "F.A.N.G." ->
           "fang"
 
         "Karin" ->
